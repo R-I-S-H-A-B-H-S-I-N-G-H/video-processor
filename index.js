@@ -6,5 +6,7 @@ const props = {
 	bitrate: "200K",
 	res: 360,
 };
-processVideo(props);
-processVideo({ ...props, outputPath: "out2.mp4", bitrate: "10K", res: 720 });
+
+for (let i = 0; i < 1; i++) {
+	processVideo({ ...props, outputPath: `out${i}.mp4`, bitrate: "100K", res: 320 });
+}

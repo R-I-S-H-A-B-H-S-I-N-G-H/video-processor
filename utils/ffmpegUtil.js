@@ -2,6 +2,7 @@
 
 const { spawnExec } = require("./spawnUtil");
 const { randomUUID } = require("crypto");
+const { removeFile } = require("./unixUtil");
 
 async function processVideoSingle(props) {
 	const { inputPath, outputPath, bitrate = "10k", res, preset = "veryslow", videoEncoder = "libx264", outputOverride = true, pass } = props;
@@ -52,6 +53,6 @@ exports.processVideo = async (props) => {
 	console.log("SECOND PASS ENDED");
 
 	console.log("removing log file :: ");
-	spawnExec(`rm ${logpath}-0.log`);
-	spawnExec(`rm ${logpath}-0.log.mbtree`);
+	removeFile(`${logpath}-0.log`);
+	removeFile(`${logpath}-0.log.mbtree`);
 };

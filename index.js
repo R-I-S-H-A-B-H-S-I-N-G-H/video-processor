@@ -7,3 +7,4 @@ const props = {
 	res: 360,
 };
 processVideo(props);
+processVideo({ ...props, outputPath: "out2.mp4", bitrate: "10K", res: 720 });

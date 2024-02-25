@@ -1,8 +1,9 @@
 "use strict";
 
 const { spawnExec } = require("./spawnUtil");
+const { randomUUID } = require("crypto");
 
-async function processVideoSingle(props, stdProps = {}) {
+async function processVideoSingle(props) {
 	const { inputPath, outputPath, bitrate = "10k", res, preset = "veryslow", videoEncoder = "libx264", outputOverride = true, pass } = props;
 	const commandArr = ["ffmpeg"];
 
@@ -27,7 +28,7 @@ async function processVideoSingle(props, stdProps = {}) {
 	}
 
 	if (pass) {
-		commandArr.push(`-pass ${pass}`);
+		commandArr.push(`-pass ${pass.index} -passlogfile ${pass.logPath}`);
 	}
 
 	if (preset) {
@@ -38,34 +39,19 @@ async function processVideoSingle(props, stdProps = {}) {
 		commandArr.push(` ${outputPath}`);
 	}
 
-	const spawnInst = spawnExec(commandArr.join(" "));
-	const { outputLog = true } = stdProps;
-
-	if (outputLog) {
-		spawnInst.stdout.on("data", (data) => {
-			console.log(`${data}`);
-		});
-		spawnInst.stderr.on("data", (data) => {
-			console.log(`${data}`);
-		});
-	}
-
-	// Handling the completion of the command
-
-	return new Promise((res, rej) => {
-		spawnInst.on("close", (code) => {
-			console.log(`child process exited with code ${code}`);
-			if (code == 0) return res(code);
-			return rej(code);
-		});
-	});
+	await spawnExec(commandArr.join(" "));
 }
 
 exports.processVideo = async (props) => {
+	const logpath = `ffmpeglog-pass-${randomUUID()}`;
 	console.log("FIRST PASS STARTED");
-	await processVideoSingle({ ...props, pass: 1, outputPath: "-an -f null /dev/null" });
+	await processVideoSingle({ ...props, pass: { index: 1, logPath: logpath }, outputPath: "-an -f null /dev/null" });
 	console.log("FIRST PASS ENDED");
 	console.log("SECOND PASS STARTED");
-	processVideoSingle({ ...props, pass: 2 });
+	await processVideoSingle({ ...props, pass: { index: 2, logPath: logpath } });
 	console.log("SECOND PASS ENDED");
+
+	console.log("removing log file :: ");
+	spawnExec(`rm ${logpath}-0.log`);
+	spawnExec(`rm ${logpath}-0.log.mbtree`);
 };

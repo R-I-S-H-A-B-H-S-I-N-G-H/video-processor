@@ -130,5 +130,4 @@ dist
 .pnp.*
 
 
-/test**.mp4
-/out**.mp4
+**/*.mp4

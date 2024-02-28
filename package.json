@@ -1,12 +1,17 @@
 {
-  "name": "ffmpeg-poc",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "dev": "node index.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+	"name": "ffmpeg-poc",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"dev": "node index.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@aws-sdk/client-s3": "^3.405.0",
+		"@aws-sdk/s3-request-presigner": "^3.405.0",
+		"dotenv": "^16.4.5"
+	}
 }

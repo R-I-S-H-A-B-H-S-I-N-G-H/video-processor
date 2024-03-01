@@ -10,6 +10,7 @@ const props = {
 	outputPath: "test/out.m3u8",
 	bitrate: "200K",
 	res: 360,
+	hlsOptions: "-f hls -hls_time 1 -hls_playlist_type vod",
 };
 processVideo(props);
 // const readstream = fs.createReadStream(path.resolve(__dirname, "test/out.m3u8"));

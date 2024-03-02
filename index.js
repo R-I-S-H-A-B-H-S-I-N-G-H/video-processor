@@ -1,12 +1,16 @@
-const { processVideo } = require("./utils/ffmpegUtil");
+const express = require("express");
+const app = express();
 
-const props = {
-	inputPath: "test.mp4",
-	outputPath: "out.mp4",
-	bitrate: "200K",
-	res: 360,
-};
+const PORT = process.env.PORT || 3000;
+const processVideo = require("./routes/processVideo");
 
-for (let i = 0; i < 1; i++) {
-	processVideo({ ...props, outputPath: `out${i}.mp4`, bitrate: "100K", res: 320 });
-}
+// Parse JSON bodies for API requests
+app.use(express.json());
+
+// Parse URL-encoded bodies for form data
+app.use(express.urlencoded({ extended: true }));
+
+app.use("/videoProcessor", processVideo);
+app.listen(PORT, () => {
+	console.log(`APP LISTING AT PORT ${PORT}`);
+});

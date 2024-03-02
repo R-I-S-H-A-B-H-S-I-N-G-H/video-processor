@@ -15,10 +15,10 @@ const { Worker, isMainThread, parentPort, workerData, threadId } = require("work
 // };
 
 if (isMainThread) {
-	exports.spawnExec = (command) => {
+	exports.spawnExec = (command, debug = false) => {
 		return new Promise((resolve, reject) => {
 			const worker = new Worker(__filename, {
-				workerData: { command },
+				workerData: { command, debug },
 			});
 			worker.on("message", resolve);
 			worker.on("error", reject);
@@ -28,7 +28,7 @@ if (isMainThread) {
 		});
 	};
 } else {
-	const { command } = workerData;
+	const { command, debug } = workerData;
 
 	if (typeof command !== "string") return;
 	const commandArr = command.split(" ").filter((ele) => ele.length != 0);
@@ -43,11 +43,13 @@ if (isMainThread) {
 		parentPort.postMessage("OUT MESSAGE");
 	});
 
-	child.stdout.on("data", (data) => {
-		console.log(`stdout: ${data}`);
-	});
+	if (debug === true) {
+		child.stdout.on("data", (data) => {
+			console.log(`stdout: ${data}`);
+		});
 
-	child.stderr.on("data", (data) => {
-		console.error(`stderr: ${data}`);
-	});
+		child.stderr.on("data", (data) => {
+			console.error(`stderr: ${data}`);
+		});
+	}
 }

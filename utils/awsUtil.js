@@ -19,10 +19,10 @@ function getS3Object() {
 	});
 }
 
-function getS3Path(key) {
+exports.getS3Path = (key) => {
 	const BUCKET = process.env.BUCKET;
 	return `https://${BUCKET}.s3.us-east-005.backblazeb2.com/${key}`;
-}
+};
 
 exports.putObject = async (key, content) => {
 	const BUCKET = process.env.BUCKET;
@@ -35,7 +35,7 @@ exports.putObject = async (key, content) => {
 
 	try {
 		const res = await s3Client.send(new PutObjectCommand(props));
-		res.s3Path = getS3Path(key);
+		res.s3Path = this.getS3Path(key);
 		console.log(res);
 	} catch (error) {
 		console.error("ERROR: ", error);

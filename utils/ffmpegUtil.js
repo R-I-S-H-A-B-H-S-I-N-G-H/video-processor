@@ -58,6 +58,9 @@ async function processVideoSingle(props) {
 }
 
 exports.processVideo = async (props) => {
+	const { outputPath } = props;
+	const outputFolder = path.parse(outputPath).dir;
+
 	const logpath = `ffmpeglog-pass-${randomUUID()}`;
 	console.log("FIRST PASS STARTED");
 	await processVideoSingle({ ...props, pass: { index: 1, logPath: logpath }, outputPath: "-an -f null /dev/null" });

@@ -1,6 +1,6 @@
 "use strict";
 const { spawnExec } = require("./spawnUtil");
-const { readdir } = require("fs");
+const fs = require("fs");
 const path = require("path");
 
 exports.creathFolder = (folderPath) => {
@@ -8,7 +8,7 @@ exports.creathFolder = (folderPath) => {
 };
 
 exports.removeFolder = (folderPath) => {
-	return spawnExec(`mkdir ${folderPath}`);
+	fs.rmSync(folderPath, { recursive: true, force: true });
 };
 
 exports.createFile = (filename) => {
@@ -21,7 +21,7 @@ exports.removeFile = (filename) => {
 
 exports.getFolderContent = (folderAbsPath) => {
 	return new Promise((res, rej) => {
-		readdir(folderAbsPath, (err, data) => {
+		fs.readdir(folderAbsPath, (err, data) => {
 			if (err) return rej(err);
 			const absPathArr = [];
 			for (let file of data) {

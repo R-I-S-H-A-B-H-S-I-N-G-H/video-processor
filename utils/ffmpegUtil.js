@@ -4,14 +4,15 @@ const { spawnExec } = require("./spawnUtil");
 const { randomUUID } = require("crypto");
 const { removeFile, creathFolder } = require("./unixUtil");
 const path = require("path");
-
+const ffmpeg_static_path = require("ffmpeg-static");
 async function processVideoSingle(props) {
 	const { inputPath, outputPath, bitrate = "10k", res, preset = "veryslow", videoEncoder = "libx264", outputOverride = true, pass, extraCommand, hlsOptions } = props;
 
 	const outputFolder = path.parse(outputPath).dir;
 	await creathFolder(outputFolder);
 
-	const commandArr = ["ffmpeg"];
+	// const commandArr = ["ffmpeg"];
+	const commandArr = [ffmpeg_static_path];
 
 	if (outputOverride) {
 		commandArr.push("-y");

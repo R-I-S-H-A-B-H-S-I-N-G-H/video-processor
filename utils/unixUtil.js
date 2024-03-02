@@ -2,6 +2,7 @@
 const { spawnExec } = require("./spawnUtil");
 const fs = require("fs");
 const path = require("path");
+const https = require("https");
 
 exports.creathFolder = (folderPath) => {
 	return spawnExec(`mkdir ${folderPath}`);
@@ -30,5 +31,23 @@ exports.getFolderContent = (folderAbsPath) => {
 			}
 			res(absPathArr);
 		});
+	});
+};
+
+exports.downloadFile = async (remoteUrl, downloadedFileAbsPath) => {
+	await this.creathFolder(path.dirname(downloadedFileAbsPath));
+	return new Promise((resolve, reject) => {
+		const file = fs.createWriteStream(downloadedFileAbsPath);
+
+		https
+			.get(remoteUrl, (response) => {
+				response.pipe(file);
+				file.on("finish", () => {
+					file.close(resolve);
+				});
+			})
+			.on("error", (error) => {
+				fs.unlink(destinationPath, () => reject(error));
+			});
 	});
 };

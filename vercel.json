@@ -5,13 +5,5 @@
 			"source": "/(.*)",
 			"destination": "/api"
 		}
-	],
-	"functions": {
-		"api/*.js": {
-			"maxDuration": 1500
-		},
-		"*/*.js": {
-			"maxDuration": 1500
-		}
-	}
+	]
 }

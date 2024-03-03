@@ -22,8 +22,8 @@ router.get("/test", async (req, res) => {
 	const limit = parseInt(req.query.limit) || 10;
 
 	// File path
-	const folderAbsPath = path.join(RootDir, "tmp");
-	await creathFolder(folderAbsPath);
+	// const folderAbsPath = path.join(RootDir, "tmp");
+	// await creathFolder(folderAbsPath);
 	const filePath = path.join(RootDir, "tmp", "example.txt");
 
 	// Content to write to the file

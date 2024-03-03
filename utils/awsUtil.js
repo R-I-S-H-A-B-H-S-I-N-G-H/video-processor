@@ -37,6 +37,7 @@ exports.putObject = async (key, content) => {
 		const res = await s3Client.send(new PutObjectCommand(props));
 		res.s3Path = this.getS3Path(key);
 		console.log(res);
+		return res;
 	} catch (error) {
 		console.error("ERROR: ", error);
 	}

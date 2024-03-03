@@ -51,3 +51,14 @@ exports.downloadFile = async (remoteUrl, downloadedFileAbsPath) => {
 			});
 	});
 };
+
+exports.writeFile = async (filePathAbs, data) => {
+	return new Promise((res, rej) => {
+		fs.writeFile(filePathAbs, data, (err) => {
+			if (err) {
+				return rej(err);
+			}
+			res({ msg: "Content written to file successfully!" });
+		});
+	});
+};

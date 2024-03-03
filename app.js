@@ -25,12 +25,7 @@ app.get("/test", (req, res) => {
 		fs.writeFileSync(filePath, data);
 
 		console.log("File written successfully:", filePath);
-		const filereader = fs.createReadStream(filePath);
-		// You can return the file path if needed
-		res.setHeader("Content-Type", "application/octet-stream");
-		res.setHeader("Content-Disposition", "attachment; filename=" + encodeURIComponent(filePath));
-
-		filereader.pipe(res);
+		res.json({ RES: "CREATED FILE" });
 	} catch (err) {
 		console.error("Error writing file:", err);
 		throw err;

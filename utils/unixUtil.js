@@ -62,3 +62,5 @@ exports.writeFile = async (filePathAbs, data) => {
 		});
 	});
 };
+
+exports.RootDir = path.parse(__dirname).dir;

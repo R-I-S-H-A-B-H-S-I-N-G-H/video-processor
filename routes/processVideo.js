@@ -3,7 +3,7 @@ const { processVideoAndPushToAws } = require("../utils/processVideoPushToAws");
 const { getS3Path, putObject } = require("../utils/awsUtil");
 const router = express.Router();
 const path = require("path");
-const { writeFile } = require("../utils/unixUtil");
+const { writeFile, RootDir, creathFolder, removeFolder } = require("../utils/unixUtil");
 const { removeFile } = require("../utils/unixUtil");
 const fs = require("fs");
 
@@ -22,7 +22,9 @@ router.get("/test", async (req, res) => {
 	const limit = parseInt(req.query.limit) || 10;
 
 	// File path
-	const filePath = path.join(__dirname, "example.txt");
+	const folderAbsPath = path.join(RootDir, "tmp");
+	await creathFolder(folderAbsPath);
+	const filePath = path.join(RootDir, "tmp", "example.txt");
 
 	// Content to write to the file
 	let content = "";
@@ -33,7 +35,8 @@ router.get("/test", async (req, res) => {
 
 	await writeFile(filePath, content);
 	const awsresp = await putObject(`test${limit}.txt`, fs.createReadStream(filePath));
-	await removeFile(filePath);
+	removeFolder(folderAbsPath);
+
 	res.json(awsresp);
 });
 

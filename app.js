@@ -18,7 +18,7 @@ app.get("/test", (req, res) => {
 	const data = "This is the content of the file.";
 
 	// File path in the /tmp directory
-	const filePath = path.join(__dirname, `/tmp/example-${Math.random()}.txt`);
+	const filePath = `/tmp/example-${Math.random()}.txt`;
 
 	try {
 		// Write the data to the file

@@ -3,6 +3,8 @@ const { spawnExec } = require("./spawnUtil");
 const fs = require("fs");
 const path = require("path");
 const https = require("https");
+const dotenv = require("dotenv");
+dotenv.config();
 
 exports.creathFolder = (folderPath) => {
 	return spawnExec(`mkdir ${folderPath}`);
@@ -63,4 +65,5 @@ exports.writeFile = async (filePathAbs, data) => {
 	});
 };
 
-exports.RootDir = path.parse(__dirname).dir;
+exports.env = process.env.ENV == "DEV" ? "DEV" : "PROD";
+exports.RootDir = this.env == "DEV" ? path.parse(__dirname).dir : "/tmp";

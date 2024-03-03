@@ -35,9 +35,9 @@ async function doHeavyTask(limit) {
 	const awsresp = await putObject(`test${limit}.txt`, fs.createReadStream(filePath));
 	removeFolder(folderAbsPath);
 }
-router.get("/test", (req, res) => {
+router.get("/test", async (req, res) => {
 	const limit = parseInt(req.query.limit) || 10;
-	doHeavyTask(limit);
+	await doHeavyTask(limit);
 	res.json({ url: getS3Path(`test${limit}.txt`) });
 });
 

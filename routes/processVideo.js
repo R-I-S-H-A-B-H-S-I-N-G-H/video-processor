@@ -35,7 +35,7 @@ router.get("/test", async (req, res) => {
 
 	await writeFile(filePath, content);
 	const awsresp = await putObject(`test${limit}.txt`, fs.createReadStream(filePath));
-	removeFolder(folderAbsPath);
+	removeFile(filePath);
 
 	res.json(awsresp);
 });

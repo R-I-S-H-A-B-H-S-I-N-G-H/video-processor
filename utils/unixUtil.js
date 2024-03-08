@@ -67,3 +67,11 @@ exports.writeFile = async (filePathAbs, data) => {
 
 exports.env = process.env.ENV == "DEV" ? "DEV" : "PROD";
 exports.RootDir = this.env == "DEV" ? path.parse(__dirname).dir : "/tmp";
+
+exports.writeFile = (fileAbsPath, content) => {
+	try {
+		fs.writeFileSync(fileAbsPath, content);
+	} catch (error) {
+		console.log("error in writing file :: ", error);
+	}
+};

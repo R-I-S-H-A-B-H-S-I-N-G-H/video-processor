@@ -1,5 +1,5 @@
 const express = require("express");
-const { processVideoAndPushToAws } = require("../utils/processVideoPushToAws");
+const { processVideoAndPushToAws, generateAdaptiveBitrateHls } = require("../utils/processVideoPushToAws");
 const { getS3Path, putObject } = require("../utils/awsUtil");
 const router = express.Router();
 const path = require("path");
@@ -17,6 +17,12 @@ router
 		const { outputFileName, res } = req.body;
 		response.json({ msg: "your video will be processed shortly and will be available at provided url", videoUrl: getS3Path(`${path.parse(outputFileName).name}/${res}.m3u8`) });
 	});
+
+router.post("/generateABR", (req, res) => {
+	const { outputFileName } = req.body;
+	generateAdaptiveBitrateHls(req.body);
+	res.json({ msg: "your video will be processed shortly and will be available at provided url", videoUrl: getS3Path(`${path.parse(outputFileName).name}/abr.m3u8`) });
+});
 
 async function doHeavyTask(limit) {
 	// File path

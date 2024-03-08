@@ -1,7 +1,8 @@
 const { processVideo } = require("../utils/ffmpegUtil");
-const { uploadFolderToS3 } = require("../utils/awsUtil");
+const { uploadFolderToS3, putObject } = require("../utils/awsUtil");
 const path = require("path");
-const { removeFolder, downloadFile, creathFolder } = require("../utils/unixUtil");
+const fs = require("fs");
+const { removeFolder, downloadFile, creathFolder, writeFile } = require("../utils/unixUtil");
 const { randomUUID } = require("crypto");
 exports.processVideoAndPushToAws = async (props) => {
 	const { outputFileName, res } = props || {};
@@ -21,4 +22,26 @@ exports.processVideoAndPushToAws = async (props) => {
 	} catch (error) {
 		console.log(error);
 	}
+};
+
+exports.generateMasterHlsFile = async (outputFileName) => {
+	const baseDir = path.join(__dirname, randomUUID());
+	const fileAbspath = path.join(baseDir, `/master.m3u8`);
+	const fileContent = `#EXTM3U\n#EXT-X-STREAM-INF:BANDWIDTH=375000,RESOLUTION=640x360\n360.m3u8\n#EXT-X-STREAM-INF:BANDWIDTH=750000,RESOLUTION=854x480\n480.m3u8\n#EXT-X-STREAM-INF:BANDWIDTH=2000000,RESOLUTION=1280x720\n720.m3u8\n#EXT-X-STREAM-INF:BANDWIDTH=3500000,RESOLUTION=1920x1080\n1080.m3u8`;
+	const s3UpPath = outputFileName.split(".").join("/abr.");
+	try {
+		await creathFolder(baseDir);
+		writeFile(fileAbspath, fileContent);
+		console.log();
+		const awsresp = await putObject(s3UpPath, fs.createReadStream(fileAbspath));
+		removeFolder(baseDir);
+	} catch (error) {}
+};
+
+exports.generateAdaptiveBitrateHls = async (props) => {
+	await this.processVideoAndPushToAws({ ...props, bitrate: "100k", res: 360 });
+	await this.processVideoAndPushToAws({ ...props, bitrate: "400k", res: 480 });
+	await this.processVideoAndPushToAws({ ...props, bitrate: "800k", res: 720 });
+	await this.processVideoAndPushToAws({ ...props, bitrate: "1600k", res: 1080 });
+	await this.generateMasterHlsFile(props.outputFileName);
 };

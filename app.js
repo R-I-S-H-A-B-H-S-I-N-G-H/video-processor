@@ -36,6 +36,10 @@ app.get("/test", (req, res) => {
 		throw err;
 	}
 });
+app.get("*", (req, res) => {
+	res.json({ status: "working" });
+});
+
 app.listen(PORT, () => {
 	console.log(`APP LISTING AT PORT ${PORT}`);
 });

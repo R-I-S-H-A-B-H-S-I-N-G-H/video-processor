@@ -43,14 +43,14 @@ exports.putObject = async (key, content) => {
 	}
 };
 
-exports.uploadFolderToS3 = async (folderpathAbs) => {
+exports.uploadFolderToS3 = async (key, folderpathAbs) => {
 	const folderContent = await getFolderContent(folderpathAbs);
 	const promiseArr = [];
 	for (let filepath of folderContent) {
 		const foldername = path.basename(path.dirname(filepath));
 		const file = path.parse(filepath);
 		const filename = file.base;
-		const promise = this.putObject(`${foldername}/${filename}`, fs.createReadStream(filepath));
+		const promise = await this.putObject(`${key}/${filename}`, fs.createReadStream(filepath));
 		promiseArr.push(promise);
 	}
 	await Promise.all(promiseArr);

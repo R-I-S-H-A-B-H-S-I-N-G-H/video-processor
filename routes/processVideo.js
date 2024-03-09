@@ -21,7 +21,7 @@ router
 router.post("/generateABR", (req, res) => {
 	const { outputFileName } = req.body;
 	generateAdaptiveBitrateHls(req.body);
-	res.json({ msg: "your video will be processed shortly and will be available at provided url", videoUrl: getS3Path(`${path.parse(outputFileName).name}/abr.m3u8`) });
+	res.json({ msg: "your video will be processed shortly and will be available at provided url", videoUrl: getS3Path(outputFileName.split(".").join("/abr.")) });
 });
 
 async function doHeavyTask(limit) {

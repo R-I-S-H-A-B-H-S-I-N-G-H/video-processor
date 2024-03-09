@@ -6,16 +6,18 @@ const { removeFolder, downloadFile, creathFolder, writeFile } = require("../util
 const { randomUUID } = require("crypto");
 exports.processVideoAndPushToAws = async (props) => {
 	const { outputFileName, res } = props || {};
-	const baseDir = path.join(__dirname, randomUUID());
-
+	const baseDir = path.join(__dirname, "temp", randomUUID());
+	const s3UpPath = outputFileName.split(".").shift();
 	try {
+		await creathFolder(path.join(__dirname, "temp"));
 		await creathFolder(baseDir);
 		props.outputPath = path.join(baseDir, `${path.parse(outputFileName).name}/${res}.m3u8`);
+		console.log(props.outputPath);
 		props.inputPath = path.join(baseDir, `download/input.mp4`);
 		props.hlsOptions = "-f hls -hls_time 1 -hls_playlist_type vod";
 		await downloadFile(props.s3Url, path.resolve(__dirname, props.inputPath));
 		await processVideo(props);
-		await uploadFolderToS3(path.dirname(props.outputPath));
+		await uploadFolderToS3(s3UpPath, path.dirname(props.outputPath));
 		removeFolder(baseDir);
 		removeFolder(path.dirname(props.outputPath));
 		removeFolder(path.dirname(props.inputPath));
@@ -39,9 +41,9 @@ exports.generateMasterHlsFile = async (outputFileName) => {
 };
 
 exports.generateAdaptiveBitrateHls = async (props) => {
+	await this.generateMasterHlsFile(props.outputFileName);
 	await this.processVideoAndPushToAws({ ...props, bitrate: "100k", res: 360 });
 	await this.processVideoAndPushToAws({ ...props, bitrate: "400k", res: 480 });
 	await this.processVideoAndPushToAws({ ...props, bitrate: "800k", res: 720 });
 	await this.processVideoAndPushToAws({ ...props, bitrate: "1600k", res: 1080 });
-	await this.generateMasterHlsFile(props.outputFileName);
 };
